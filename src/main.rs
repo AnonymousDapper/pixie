@@ -46,9 +46,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut pixels = {
         let surtex = SurfaceTexture::new(window_width, window_height, &window);
         PixelsBuilder::new(pixie::FB_WIDTH as u32, pixie::FB_HEIGHT as u32, surtex)
-            .wgpu_backend(pixels::wgpu::Backends::VULKAN)
+            //.wgpu_backend(pixels::wgpu::Backends::VULKAN)
             .texture_format(pixie::PIPELINE_TEXTURE_FORMAT)
-            .clear_color(pixels::wgpu::Color::TRANSPARENT)
+            .render_texture_format(pixie::PIPELINE_TEXTURE_FORMAT)
             .enable_vsync(true)
             .build()?
     };
@@ -61,7 +61,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut sim = Simulator::new();
     let mut canvas = Canvas::new();
-    /*
+
     sim.add_particle(
         Particle::new(
             Point::new(80., 80.),
@@ -99,13 +99,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             0.,
         )
         .with_name("blue"),
-    );*/
+    );
 
     event_loop.run(move |evt, _, flow| {
         if let Event::RedrawRequested(_) = evt {
             canvas.clear();
             sim.render(&mut canvas);
             canvas.render_to(pixels.get_frame());
+
+            //let result = pixels.render();
 
             let result = pixels.render_with(|encoder, target, ctx| {
                 let texture_buffer = shader.get_texture_view();
