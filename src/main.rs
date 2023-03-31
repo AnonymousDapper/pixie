@@ -118,9 +118,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Ok(())
             });
 
-            if result
-                .map_err(|e| error!("pixels render failed: {}", e))
-                .is_err()
+            if match result {
+                Err(
+                    e @ pixels::Error::Surface(
+                        pixels::wgpu::SurfaceError::Timeout | pixels::wgpu::SurfaceError::Outdated,
+                    ),
+                ) => {
+                    error!("warning: failed to render frame: {}", e);
+                    Ok(())
+                }
+                other => other,
+            }
+            .map_err(|e| error!("pixels render failed: {:?}", e))
+            .is_err()
             {
                 *flow = ControlFlow::Exit;
             }

@@ -16,4 +16,5 @@ fn main([[location(0)]] coords: vec2<f32>) -> [[location(0)]] vec4<f32> {
     let cut_color = textureSample(cut_surface, tex_sampler, coords);
 
     return vec4<f32>(surface_color.rgb + cut_color.rgb, 1.0);
+    //return surface_color + cut_color * (1.0 - surface_color.a);
 }

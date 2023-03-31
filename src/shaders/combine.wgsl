@@ -16,6 +16,6 @@ fn main([[location(0)]] coords: vec2<f32>) -> [[location(0)]] vec4<f32> {
 
     let mix = textureSample(mix_surface, tex_sampler, coords);
 
-    return frame + mix;
+    return frame + mix + (1.0 - frame.a);
     //return vec4<f32>(frame + mix, 1.0);
 }
